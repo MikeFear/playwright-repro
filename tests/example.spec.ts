@@ -8,7 +8,7 @@ test.describe('Example', () => {
   let context: BrowserContext;
   let page: Page;
 
-  test.beforeAll(async ({browser}) => {
+  test.beforeAll(async () => {
     firstApiClient = new FirstApiClient();
     await firstApiClient.initializeContext();
     secondApiClient = new SecondApiClient();
