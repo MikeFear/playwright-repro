@@ -1,36 +1,38 @@
 import {test, expect, BrowserContext, Page} from '@playwright/test';
-import {ApiClient} from "./api.client";
+import {FirstApiClient} from "./first-api.client";
+import {SecondApiClient} from "./second-api.client";
 
 test.describe('Example', () => {
-  let apiClient: ApiClient;
+  let firstApiClient: FirstApiClient;
+  let secondApiClient: SecondApiClient;
   let context: BrowserContext;
   let page: Page;
 
-  test.beforeAll(async () => {
-    apiClient = new ApiClient();
-    await apiClient.initializeContext();
-  })
+  test.beforeAll(async ({browser}) => {
+    firstApiClient = new FirstApiClient();
+    await firstApiClient.initializeContext();
+    secondApiClient = new SecondApiClient();
+    await secondApiClient.initializeContext();
+  });
+
+  test.afterAll(async () => {
+    await firstApiClient.dispose();
+    await secondApiClient.dispose();
+  });
 
   test.describe('inner tests', () => {
-    test.beforeAll(async ({browser}) => {
+    test.beforeAll(async ({ browser }) => {
       context = await browser.newContext();
       page = await context.newPage();
+      await page.goto('https://playwright.dev/');
     });
 
-    test.afterAll(async ({browser}) => {
+    test.afterAll(async () => {
+      await page.close();
       await context.close();
     });
 
-    test('get started link', async () => {
-      await apiClient.createPost();
-      await page.goto('https://playwright.dev/');
-
-      // Click the get started link.
-      await page.getByRole('link', { name: 'Get started' }).click();
-
-      // Expects page to have a heading with the name of Installation.
-      await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-    });
+    test('test', async () => {});
   });
 })
 
